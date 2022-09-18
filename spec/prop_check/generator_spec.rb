@@ -9,7 +9,7 @@ RSpec.describe PropCheck::Generator do
   # Used in a PropCheck::Generators doctest
   class User
     attr_accessor :name, :age
-    def initialize(name: , age: )
+    def initialize(name: nil, age: nil)
       @name = name
       @age = age
     end
@@ -23,7 +23,7 @@ RSpec.describe PropCheck::Generator do
   describe "#where" do
     it "filters out results we do not like" do
       no_fizzbuzz = PropCheck::Generators.integer.where { |val| val % 3 != 0 && val % 5 != 0 }
-      PropCheck::forall(num: no_fizzbuzz) do |num:|
+      PropCheck::forall(num: no_fizzbuzz) do |num: nil|
         expect(num).to_not be(3)
         expect(num).to_not be(5)
         expect(num).to_not be(6)
@@ -46,7 +46,7 @@ RSpec.describe PropCheck::Generator do
       PG = PropCheck::Generators
       user_gen =
         PG.fixed_hash(name: PG.string, age: PG.integer)
-          .map { |name:, age:| [name, age]}
+          .map { |name: nil, age: nil| [name, age]}
     end
 
     describe "while shrinking" do

@@ -78,7 +78,7 @@ module PropCheck
       .each(&block)
     end
 
-    protected def squish(arr)
+    def squish(arr)
       new_children = self.children.reduce(arr) { |acc, elem| elem.squish(acc) }
       PropCheck::Helper.lazy_append([self.root], new_children)
     end
@@ -113,7 +113,7 @@ module PropCheck
       LazyTree.new(new_root, new_children)
     end
 
-    private_class_method def self.permutations(trees)
+    def self.permutations(trees)
       # p trees
       trees.lazy.each_with_index.flat_map do |tree, index|
         tree.children.map do |child|

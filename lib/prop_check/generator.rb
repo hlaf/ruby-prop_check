@@ -27,6 +27,7 @@ module PropCheck
       max_consecutive_attempts = kwargs[:max_consecutive_attempts]
 
       (0..max_consecutive_attempts).each do
+        #require 'byebug'; byebug
         res = @block.call(**kwargs)
         next if res.root == :"_PropCheck.filter_me"
 
@@ -103,6 +104,7 @@ module PropCheck
     #   => "S"
     def map(&proc)
       Generator.new do |**kwargs|
+        #require 'byebug'; byebug
         result = self.generate(**kwargs)
         result.map(&proc)
       end
@@ -129,7 +131,7 @@ module PropCheck
     #
     #    >> Generators.integer.resize{}
     def resize(&proc)
-      Generator.new do |size:, **other_kwargs|
+      Generator.new do |size: -1, **other_kwargs|
         new_size = proc.call(size)
         self.generate(**other_kwargs, size: new_size)
       end

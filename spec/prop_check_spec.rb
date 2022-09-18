@@ -24,7 +24,7 @@ RSpec.describe PropCheck do
 
       it "accepts keyword arguments" do
         expect do
-          PropCheck.forall(x: PropCheck::Generators.integer, y: PropCheck::Generators.float) do |x:, y:|
+          PropCheck.forall(x: PropCheck::Generators.integer, y: PropCheck::Generators.float) do |x: nil, y: nil|
             expect(x).to be_a Integer
             expect(y).to be_a Float
           end
@@ -42,7 +42,7 @@ RSpec.describe PropCheck do
 
       it "will not shrink upon encountering a SystemExit" do
         expect do
-          PropCheck.forall(x: PropCheck::Generators.integer) do |x:|
+          PropCheck.forall(x: PropCheck::Generators.integer) do |x: nil|
             raise SystemExit if x > 3
           end
         end.to raise_error do |error|
@@ -55,7 +55,7 @@ RSpec.describe PropCheck do
 
       it "will not shrink upon encountering a SignalException" do
         expect do
-          PropCheck.forall(x: PropCheck::Generators.integer) do |x:|
+          PropCheck.forall(x: PropCheck::Generators.integer) do |x: nil|
             Process.kill('HUP',Process.pid) if x > 3
           end
         end.to raise_error do |error|
@@ -74,7 +74,7 @@ RSpec.describe PropCheck do
         shrunken_val = nil
 
         expect do
-          PropCheck.forall(x: PropCheck::Generators.float) do |x:|
+          PropCheck.forall(x: PropCheck::Generators.float) do |x: nil|
             if x > 3.1415
               exploding_val ||= x
               shrunken_val = x
@@ -111,7 +111,7 @@ RSpec.describe PropCheck do
       describe "#check" do
         it "generates an error that Rspec can pick up" do
           expect do
-            PropCheck.forall(x: PropCheck::Generators.nonnegative_integer).with_config(n_runs: 1_000) do |x:|
+            PropCheck.forall(x: PropCheck::Generators.nonnegative_integer).with_config(n_runs: 1_000) do |x: nil|
               expect(x).to be < 10
             end
           end.to raise_error do |error|
@@ -132,7 +132,7 @@ RSpec.describe PropCheck do
         it "generates an error with 'shrinking impossible' if the value cannot be shrunk further" do
           expect do
             PropCheck.forall(PropCheck::Generators.array(PropCheck::Generators.integer)) do |array|
-              array.sum / array.length
+              array.inject(0,:+) / array.length
             end
           end.to raise_error do |error|
             expect(error).to be_a(ZeroDivisionError)
@@ -143,14 +143,14 @@ RSpec.describe PropCheck do
 
       describe "#where" do
         it "filters results" do
-          PropCheck.forall(x: PropCheck::Generators.integer, y: PropCheck::Generators.positive_integer).where { |x:, y:|  x != y}.check do |x:, y:|
+          PropCheck.forall(x: PropCheck::Generators.integer, y: PropCheck::Generators.positive_integer).where { |x: nil, y: nil|  x != y}.check do |x: nil, y: nil|
             expect(x).to_not eq y
           end
         end
 
         it "raises an error if too much was filtered" do
           expect do
-            PropCheck.forall(x: PropCheck::Generators.positive_integer).where { |x:|  x == 0}.check do
+            PropCheck.forall(x: PropCheck::Generators.positive_integer).where { |x: nil|  x == 0}.check do
             end
           end.to raise_error do |error|
             expect(error).to be_a(PropCheck::Errors::GeneratorExhaustedError)
@@ -161,7 +161,7 @@ RSpec.describe PropCheck do
 
         it "crashes when doing nonesense in the where block" do
           expect do
-            PropCheck.forall(x: PropCheck::Generators.negative_integer).where { |x:|  x.unexistentmethod == 3}.check do
+            PropCheck.forall(x: PropCheck::Generators.negative_integer).where { |x: nil|  x.unexistentmethod == 3}.check do
             end
           end.to raise_error do |error|
             expect(error).to be_a(NoMethodError)
@@ -241,7 +241,7 @@ RSpec.describe PropCheck do
       include PropCheck::Generators
       it "adds forall to the example scope and brings generators inside PropCheck::Generators into scope`" do
         thing = nil
-        forall(x: integer) do |x:|
+        forall(x: integer) do |x: nil|
           expect(x).to be_a(Integer)
           thing = true
         end

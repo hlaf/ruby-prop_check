@@ -22,7 +22,7 @@ module PropCheck
       Generator.wrap(val)
     end
 
-    private def integer_shrink(val)
+    def integer_shrink(val)
       # 0 cannot shrink further; base case
       return [] if val.zero?
 
@@ -60,7 +60,7 @@ module PropCheck
     #   >> r = Random.new(42); Generators.choose(0..5).sample(size: 20000, rng: r)
     #   => [3, 4, 2, 4, 4, 1, 2, 2, 2, 4]
     def choose(range)
-      Generator.new do |rng:, **|
+      Generator.new do |rng: nil, **kwargs|
         val = rng.rand(range)
         LazyTree.new(val, integer_shrink(val))
       end
@@ -81,7 +81,7 @@ module PropCheck
     #   >> r = Random.new(42); Generators.integer.sample(size: 20000, rng: r)
     #   => [-4205, -19140, 18158, -8716, -13735, -3150, 17194, 1962, -3977, -18315]
     def integer
-      Generator.new do |size:, rng:, **|
+      Generator.new do |size: nil, rng: nil, **kwargs|
         ensure_proper_size!(size)
 
         val = rng.rand(-size..size)
@@ -89,7 +89,7 @@ module PropCheck
       end
     end
 
-    private def ensure_proper_size!(size)
+    def ensure_proper_size!(size)
       return if size.is_a?(Integer) && size >= 0
 
       raise ArgumentError, "`size:` should be a nonnegative integer but got `#{size.inspect}`"
@@ -123,7 +123,7 @@ module PropCheck
       positive_integer.map(&:-@)
     end
 
-    private def fraction(num_a, num_b, num_c)
+    def fraction(num_a, num_b, num_c)
       num_a.to_f + num_b.to_f / (num_c.to_f.abs + 1.0)
     end
 
@@ -146,7 +146,7 @@ module PropCheck
       end
     end
 
-    @@special_floats = [Float::NAN, Float::INFINITY, -Float::INFINITY, Float::MAX, Float::MIN, 0.0.next_float, 0.0.prev_float]
+    @@special_floats = [Float::NAN, Float::INFINITY, -Float::INFINITY, Float::MAX, Float::MIN]#, 0.0.next_float, 0.0.prev_float]
     ##
     # Generates floating-point numbers
     # Will generate NaN, Infinity, -Infinity,
@@ -228,7 +228,8 @@ module PropCheck
         end
 
       tuple(*keypair_generators)
-        .map(&:to_h)
+        .map { |x| Hash[x] }
+        #.map(&:to_h)
     end
 
     ##
@@ -273,7 +274,7 @@ module PropCheck
       end
     end
 
-    private def make_array(element_generator, min, count, uniq)
+    def make_array(element_generator, min, count, uniq)
       amount = min if count < min
       amount = min if count == min && min != 0
       amount ||= (count - min)
@@ -285,7 +286,7 @@ module PropCheck
       make_array_uniq(element_generator, min, amount, uniq)
     end
 
-    private def make_array_simple(element_generator, amount)
+    def make_array_simple(element_generator, amount)
       generators = amount.times.map do
         element_generator.clone
       end
@@ -293,7 +294,7 @@ module PropCheck
       tuple(*generators)
     end
 
-    private def make_array_uniq(element_generator, min, amount, uniq_fun)
+    def make_array_uniq(element_generator, min, amount, uniq_fun)
       Generator.new do |**kwargs|
         arr = []
         uniques = Set.new
@@ -346,7 +347,8 @@ module PropCheck
     #
     def hash_of(key_generator, value_generator, **kwargs)
       array(tuple(key_generator, value_generator), **kwargs)
-        .map(&:to_h)
+        .map { |x| Hash[x] }
+        #.map(&:to_h)
     end
 
     @@alphanumeric_chars = [('a'..'z'), ('A'..'Z'), ('0'..'9')].flat_map(&:to_a).freeze

@@ -27,7 +27,7 @@ class PropCheck::Property::Shrinker
     [@problem_child.root, @problem_exception, @shrink_steps]
   end
 
-  private def shrink(&block)
+  def shrink(&block)
     wrapped_enum.each do
       instruction, sibling = safe_read_sibling
       break if instruction == :break
@@ -39,16 +39,16 @@ class PropCheck::Property::Shrinker
     end
   end
 
-  private def wrapped_enum
+  def wrapped_enum
     @hooks.wrap_enum(0..@config.max_shrink_steps).lazy
   end
 
-  private def inc_shrink_step
+  def inc_shrink_step
     @shrink_steps += 1
     @io.print '.' if @config.verbose
   end
 
-  private def safe_read_sibling
+  def safe_read_sibling
     begin
       sibling = @siblings.next
       [:continue, sibling]
@@ -61,7 +61,7 @@ class PropCheck::Property::Shrinker
     end
   end
 
-  private def safe_call_block(sibling, &block)
+  def safe_call_block(sibling, &block)
     begin
       PropCheck::Helper.call_splatted(sibling.root, &block)
     # It is correct that we want to rescue _all_ Exceptions
@@ -74,7 +74,7 @@ class PropCheck::Property::Shrinker
     end
   end
 
-  private def print_shrinking_exceeded_message
+  def print_shrinking_exceeded_message
     @io.puts "(Note: Exceeded #{@config.max_shrink_steps} shrinking steps, the maximum.)"
   end
 end

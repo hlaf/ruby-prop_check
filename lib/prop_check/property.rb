@@ -1,5 +1,5 @@
 require 'stringio'
-require 'amazing_print'
+require 'awesome_print'
 
 require 'prop_check/property/configuration'
 require 'prop_check/property/output_formatter'
@@ -198,7 +198,7 @@ module PropCheck
       ensure_not_exhausted!(n_runs)
     end
 
-    private def gen_from_bindings(bindings, kwbindings)
+    def gen_from_bindings(bindings, kwbindings)
       if bindings == [] && kwbindings != {}
         PropCheck::Generators.fixed_hash(**kwbindings)
       elsif bindings != [] && kwbindings == {}
@@ -217,13 +217,13 @@ c.f. https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-k
       end
     end
 
-    private def ensure_not_exhausted!(n_runs)
+    def ensure_not_exhausted!(n_runs)
       return if n_runs >= @config.n_runs
 
       raise_generator_exhausted!
     end
 
-    private def raise_generator_exhausted!()
+    def raise_generator_exhausted!()
       raise Errors::GeneratorExhaustedError, """
         Could not perform `n_runs = #{@config.n_runs}` runs,
         (exhausted #{@config.max_generate_attempts} tries)
@@ -234,7 +234,7 @@ c.f. https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-k
         """
     end
 
-    private def check_attempt(generator_result, n_successful, &block)
+    def check_attempt(generator_result, n_successful, &block)
       PropCheck::Helper.call_splatted(generator_result.root, &block)
 
     # immediately stop (without shrinnking) for when the app is asked
@@ -263,14 +263,14 @@ c.f. https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-k
       raise e, output_string, e.backtrace
     end
 
-    private def attempts_enum(binding_generator)
+    def attempts_enum(binding_generator)
         @hooks
         .wrap_enum(raw_attempts_enum(binding_generator))
         .lazy
         .take(@config.n_runs)
     end
 
-    private def raw_attempts_enum(binding_generator)
+    def raw_attempts_enum(binding_generator)
       rng = Random::DEFAULT
       size = 1
       (0...@config.max_generate_attempts)
@@ -283,7 +283,7 @@ c.f. https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-k
         end
     end
 
-    private def show_problem_output(problem, generator_results, n_successful, &block)
+    def show_problem_output(problem, generator_results, n_successful, &block)
       output = @config.verbose ? STDOUT : StringIO.new
       output = PropCheck::Property::OutputFormatter.pre_output(output, n_successful, generator_results.root, problem)
       shrunken_result, shrunken_exception, n_shrink_steps = shrink(generator_results, output, &block)
@@ -292,7 +292,7 @@ c.f. https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-k
       [output, shrunken_result, shrunken_exception, n_shrink_steps]
     end
 
-    private def shrink(bindings_tree, io, &block)
+    def shrink(bindings_tree, io, &block)
       PropCheck::Property::Shrinker.call(bindings_tree, io, @hooks, @config, &block)
     end
   end
