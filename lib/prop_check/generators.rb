@@ -461,7 +461,7 @@ module PropCheck
     # Shrinks towards characters with lower codepoints, e.g. ASCII
     #
     #    >> Generators.printable_char.sample(size: 10, rng: Random.new(42))
-    #    => ["\uE2BD", "\uF46F", "\uF3CB", "\uF3A8", "\uEE1D", "\uEB75", "\uF5C7", "\uF7DA", "\uE133", "\uF437"]
+    #    => RUBY_VERSION >= '2.5' ? ["\uF9DE", "\uE0D4", "\uF286", "\uF1E2", "\uF1BF", "\uEC34", "\uE98C", "\uF3DE", "\uF5F1", "\u020C"] : ["\uE2BD", "\uF46F", "\uF3CB", "\uF3A8", "\uEE1D", "\uEB75", "\uF5C7", "\uF7DA", "\uE133", "\uF437"]
     def printable_char
       one_of(*@@printable_chars.map(&method(:constant)))
     end
@@ -473,7 +473,7 @@ module PropCheck
     # Shrinks towards shorter strings, and towards characters with lower codepoints, e.g. ASCII
     #
     #    >> Generators.printable_string.sample(5, size: 10, rng: Random.new(42))
-    #    => ["\uE2BD\uF46F\uF3CB\uF3A8", "\uF5C7\uF7DA\uE133\uF437\uF0AB\uF52B\uF7B8\uECD5\uEBC4\uEAC8", "\uE5F6\uE262\uE8B8\uF54C\uE8E2\uF420\uF31C\uF875", "\uF12C\uEC9A\uEF76\uF85D\uF24C\uEAB9\uE13B\uE39B\uE95F\uE760", "\uE66F\uE01E\uEA0F\uEB1E\uF193"]
+    #    => RUBY_VERSION >= '2.5' ? ["\uE0D4\uF286\uF1E2\uF1BF", "\uF3DE\uF5F1\u020C\uF24E\uEEC2\uF342\uF5CF\uEAEC\uE9DB\uE8DF", "\uE40D\u{10042}\uE079\uE6CF\uF363\uF89D\uE6F9\uF237", "\uE218\uEF43\uEAB1\uED8D\uF674\uF063\uE8D0\u0214\uE1B2\uE776", "\uE577"] : ["\uE2BD\uF46F\uF3CB\uF3A8", "\uF5C7\uF7DA\uE133\uF437\uF0AB\uF52B\uF7B8\uECD5\uEBC4\uEAC8", "\uE5F6\uE262\uE8B8\uF54C\uE8E2\uF420\uF31C\uF875", "\uF12C\uEC9A\uEF76\uF85D\uF24C\uEAB9\uE13B\uE39B\uE95F\uE760", "\uE66F\uE01E\uEA0F\uEB1E\uF193"]
     #
     # Accepts the same options as `array`
     def printable_string(**kwargs)
@@ -487,7 +487,7 @@ module PropCheck
     # Shrinks towards characters with lower codepoints, e.g. ASCII
     #
     #    >> Generators.printable_char.sample(size: 10, rng: Random.new(42))
-    #    => ["\uE2BD", "\uF46F", "\uF3CB", "\uF3A8", "\uEE1D", "\uEB75", "\uF5C7", "\uF7DA", "\uE133", "\uF437"]
+    #    => RUBY_VERSION >= '2.5' ? ["\uF9DE", "\uE0D4", "\uF286", "\uF1E2", "\uF1BF", "\uEC34", "\uE98C", "\uF3DE", "\uF5F1", "\u020C"] : ["\uE2BD", "\uF46F", "\uF3CB", "\uF3A8", "\uEE1D", "\uEB75", "\uF5C7", "\uF7DA", "\uE133", "\uF437"]
     def char
       choose(0..0x10FFFF).map do |num|
         [num].pack('U')
