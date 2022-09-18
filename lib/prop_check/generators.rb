@@ -461,7 +461,7 @@ module PropCheck
     # Shrinks towards characters with lower codepoints, e.g. ASCII
     #
     #    >> Generators.printable_char.sample(size: 10, rng: Random.new(42))
-    #    => ["吏", "", "", "", "", "", "", "", "", "Ȍ"]
+    #    => ["\uE2BD", "\uF46F", "\uF3CB", "\uF3A8", "\uEE1D", "\uEB75", "\uF5C7", "\uF7DA", "\uE133", "\uF437"]
     def printable_char
       one_of(*@@printable_chars.map(&method(:constant)))
     end
@@ -473,7 +473,7 @@ module PropCheck
     # Shrinks towards shorter strings, and towards characters with lower codepoints, e.g. ASCII
     #
     #    >> Generators.printable_string.sample(5, size: 10, rng: Random.new(42))
-    #    => ["", "Ȍ", "𐁂", "Ȕ", ""]
+    #    => ["\uE2BD\uF46F\uF3CB\uF3A8", "\uF5C7\uF7DA\uE133\uF437\uF0AB\uF52B\uF7B8\uECD5\uEBC4\uEAC8", "\uE5F6\uE262\uE8B8\uF54C\uE8E2\uF420\uF31C\uF875", "\uF12C\uEC9A\uEF76\uF85D\uF24C\uEAB9\uE13B\uE39B\uE95F\uE760", "\uE66F\uE01E\uEA0F\uEB1E\uF193"]
     #
     # Accepts the same options as `array`
     def printable_string(**kwargs)
@@ -487,7 +487,7 @@ module PropCheck
     # Shrinks towards characters with lower codepoints, e.g. ASCII
     #
     #    >> Generators.printable_char.sample(size: 10, rng: Random.new(42))
-    #    => ["吏", "", "", "", "", "", "", "", "", "Ȍ"]
+    #    => ["\uE2BD", "\uF46F", "\uF3CB", "\uF3A8", "\uEE1D", "\uEB75", "\uF5C7", "\uF7DA", "\uE133", "\uF437"]
     def char
       choose(0..0x10FFFF).map do |num|
         [num].pack('U')
@@ -501,7 +501,7 @@ module PropCheck
     # Shrinks towards characters with lower codepoints, e.g. ASCII
     #
     #    >> Generators.string.sample(5, size: 10, rng: Random.new(42))
-    #    => ["\u{A3DB3}𠍜\u{3F46A}\u{1AEBC}", "􍙦𡡹󴇒\u{DED74}𪱣\u{43E97}ꂂ\u{50695}􏴴\u{C0301}", "\u{4FD9D}", "\u{C14BF}\u{193BB}𭇋󱣼\u{76B58}", "𦐺\u{9FDDB}\u{80ABB}\u{9E3CF}𐂽\u{14AAE}"]
+    #    => ["\u{A3DB3}\u{2035C}\u{3F46A}\u{1AEBC}", "\u{10D666}\u{21879}\u{F41D2}\u{DED74}\u{2AC63}\u{43E97}\uA082\u{50695}\u{10FD34}\u{C0301}", "\u{4FD9D}", "\u{C14BF}\u{193BB}\u{2D1CB}\u{F18FC}\u{76B58}", "\u{2643A}\u{9FDDB}\u{80ABB}\u{9E3CF}\u{100BD}\u{14AAE}"]
     #
     # Accepts the same options as `array`
     def string(**kwargs)
