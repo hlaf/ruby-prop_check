@@ -53,7 +53,7 @@ RSpec.describe PropCheck do
         end
       end
 
-      it "will not shrink upon encountering a SignalException" do
+      it "will not shrink upon encountering a SignalException", :skip => Gem.win_platform? do
         expect do
           PropCheck.forall(x: PropCheck::Generators.integer) do |x: nil|
             Process.kill('HUP',Process.pid) if x > 3
