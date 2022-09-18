@@ -14,7 +14,6 @@ module PropCheck
             max_shrink_steps: 10000,
             max_consecutive_attempts: 30
           )
-        #require 'byebug'; byebug
         super
         self.verbose = verbose
         self.n_runs = n_runs
