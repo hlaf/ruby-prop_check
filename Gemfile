@@ -12,5 +12,7 @@ group :test do
   gem "simplecov", require: false
 
   gem 'json', '<= 2.4.1', require: false if RUBY_VERSION <= '2.0.0'
-  gem 'byebug', '9.0.6' if RUBY_VERSION < '2.5.0'
+  gem 'byebug', RUBY_VERSION < '2.5.0' ? '9.0.6' : '>= 10.0.0'
+  gem 'pry-rescue'
+  gem 'pry-stack_explorer'
 end
